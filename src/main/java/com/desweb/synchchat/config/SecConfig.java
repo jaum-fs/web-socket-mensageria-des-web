@@ -66,29 +66,29 @@ public class SecConfig {
                 .cors(c -> c.configurationSource(corsConfigurationSource()))
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/produtos/**").permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "/produtos/**").hasAnyRole(Role.USER.name(), Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.PUT, "/produtos/**").hasRole(Role.ADMIN.name())
-                        .requestMatchers(HttpMethod.DELETE, "/produtos/**").hasRole(Role.ADMIN.name())
-
-                        // qq usuário pode cadastrar um usuário
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/usuarios").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/usuarios/*").hasRole(String.valueOf(Role.ADMIN))
+                        .requestMatchers(HttpMethod.DELETE, "/usuarios/*").hasRole(String.valueOf(Role.ADMIN))
+                        .requestMatchers(HttpMethod.GET, "/usuarios").hasRole(String.valueOf(Role.ADMIN))
+                        .requestMatchers(HttpMethod.PUT, "/usuarios").authenticated()
 
-                        // qq usuário pode se logar
-                        .requestMatchers(HttpMethod.POST, "/autenticacao/login").permitAll()
 
-                        // Para acessar /favoritos é preciso estar logado
-                        //.requestMatchers(HttpMethod.GET,"/favoritos/**").authenticated()
-                        //.requestMatchers(HttpMethod.POST,"/favoritos/**").authenticated()
-                        //.requestMatchers(HttpMethod.DELETE,"/favoritos/**").authenticated())
+                        .requestMatchers(HttpMethod.GET, "/salas").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/salas/*").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/salas/owner/*").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/salas/publica/*").hasAnyRole(String.valueOf(Role.ADMIN),  String.valueOf(Role.USER))
+                        .requestMatchers(HttpMethod.POST, "/salas/privada/*").hasAnyRole(String.valueOf(Role.ADMIN),  String.valueOf(Role.USER))
+                        .requestMatchers(HttpMethod.PUT, "/salas/*/mensagem").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/salas/*/usuario/*").hasRole(String.valueOf(Role.ADMIN))
+                        .requestMatchers(HttpMethod.DELETE, "/salas/*").hasAnyRole(String.valueOf(Role.ADMIN),  String.valueOf(Role.USER))
+
+
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+
 
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> {
-                    // Quando o usuário não está logado, por default, é retornado o erro 403 - FORBIDDEN
-                    // Estamos mudando para 401 - UNAUTHORIZED
                     ex.authenticationEntryPoint((request, response, authException) -> {
                         response.setStatus(HttpStatus.UNAUTHORIZED.value());
                         response.setContentType("application/json");

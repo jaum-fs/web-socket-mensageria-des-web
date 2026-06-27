@@ -11,7 +11,6 @@ import lombok.*;
 @ToString
 public class UsuarioLogin {
     @NotBlank(message = "O 'nickname' deve ser informado")
-    @Email(message = "nickname inválido")
     private String nickname;
 
     @NotBlank(message = "A 'senha' deve ser informada")

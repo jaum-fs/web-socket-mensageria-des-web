@@ -21,7 +21,6 @@ public class Usuario {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    @Max(value = 30)
     @NotEmpty(message = "Nickname não pode ser nulo ou vazio.")
     private String nickname;
 
