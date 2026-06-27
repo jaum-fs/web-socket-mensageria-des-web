@@ -69,8 +69,9 @@ public class RoomController {
     @PutMapping("/{roomId}/usuario/{userId}")
     public ResponseEntity<RoomDto> adicionarUsuario(
             @PathVariable UUID roomId,
-            @PathVariable Long userId) {
-        RoomDto room = roomService.adicionarUsuario(roomId, userId);
+            @PathVariable Long userId,
+            @RequestParam(required = false, defaultValue = "") String password) {
+        RoomDto room = roomService.adicionarUsuario(roomId, userId, password);
         return ResponseEntity.ok(room);
     }
 

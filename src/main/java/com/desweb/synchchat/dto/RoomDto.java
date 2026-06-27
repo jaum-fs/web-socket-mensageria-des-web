@@ -10,6 +10,7 @@ public record RoomDto(
         Long ownerId,
         List<String> historico,
         @JsonProperty("room_users")
-        List<Long> userIds
+        List<Long> userIds,
+        Boolean isPrivate
 ) {
 }

@@ -8,7 +8,9 @@ import com.desweb.synchchat.repository.RoomRepository;
 import com.desweb.synchchat.repository.UserRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.UUID;
@@ -85,21 +87,28 @@ public class RoomService {
     }
 
     // UPDATE - Adiciona usuário à sala
-    public RoomDto adicionarUsuario(UUID roomId, Long userId) {
+    public RoomDto adicionarUsuario(UUID roomId, Long userId, String password) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Sala com id = " + roomId + " não encontrada."));
+
+        if (room.getPassword() != null && !room.getPassword().isEmpty()) {
+            if (!room.getPassword().equals(password)) {
+                throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Senha incorreta.");
+            }
+        }
+
         Usuario usuario = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("Usuário com id = " + userId + " não encontrado."));
-        
-        // Verifica se o usuário já está na sala
+
         if (room.getUsers() == null) {
             room.setUsers(new java.util.ArrayList<>());
         }
-        
-        if (!room.getUsers().contains(usuario)) {
+
+        boolean alreadyIn = room.getUsers().stream().anyMatch(u -> u.getId().equals(userId));
+        if (!alreadyIn) {
             room.getUsers().add(usuario);
         }
-        
+
         return roomMapper.toRoomDto(roomRepository.save(room));
     }
 
@@ -107,13 +116,11 @@ public class RoomService {
     public RoomDto removerUsuario(UUID roomId, Long userId) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Sala com id = " + roomId + " não encontrada."));
-        Usuario usuario = userRepository.findById(userId)
-            .orElseThrow(() -> new RuntimeException("Usuário com id = " + userId + " não encontrado."));
-        
+
         if (room.getUsers() != null) {
-            room.getUsers().remove(usuario);
+            room.getUsers().removeIf(u -> u.getId().equals(userId));
         }
-        
+
         return roomMapper.toRoomDto(roomRepository.save(room));
     }
 

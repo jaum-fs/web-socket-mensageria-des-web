@@ -17,11 +17,12 @@ public interface RoomMapper {
 
     // Room -> RoomDto
     @Mapping(target = "userIds", source = "users", qualifiedByName = "mapUsersToIds")
+    @Mapping(target = "isPrivate", source = "password", qualifiedByName = "mapPasswordToIsPrivate")
     RoomDto toRoomDto(Room room);
 
     // RoomDto -> Room (inverso automático)
     @Mapping(target = "users", ignore = true)
-    @Mapping(target = "password", ignore = true)// Ignora, pois senha não deve ser mostrada
+    @Mapping(target = "password", ignore = true)
     @InheritInverseConfiguration(name = "toRoomDto")
     Room toRoom(RoomDto roomDto);
 
@@ -39,5 +40,10 @@ public interface RoomMapper {
         return users.stream()
                 .map(Usuario::getId)
                 .collect(Collectors.toList());
+    }
+
+    @Named("mapPasswordToIsPrivate")
+    default Boolean mapPasswordToIsPrivate(String password) {
+        return password != null && !password.isEmpty();
     }
 }

@@ -79,7 +79,7 @@ public class SecConfig {
                         .requestMatchers(HttpMethod.POST, "/salas/publica/*").hasAnyRole(String.valueOf(Role.ADMIN),  String.valueOf(Role.USER))
                         .requestMatchers(HttpMethod.POST, "/salas/privada/*").hasAnyRole(String.valueOf(Role.ADMIN),  String.valueOf(Role.USER))
                         .requestMatchers(HttpMethod.PUT, "/salas/*/mensagem").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/salas/*/usuario/*").hasRole(String.valueOf(Role.ADMIN))
+                        .requestMatchers(HttpMethod.PUT, "/salas/*/usuario/*").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/salas/*").hasAnyRole(String.valueOf(Role.ADMIN),  String.valueOf(Role.USER))
 
 

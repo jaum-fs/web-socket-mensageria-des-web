@@ -1,11 +1,11 @@
 package com.desweb.synchchat.model;
 
+import com.desweb.synchchat.converter.StringListConverter;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,8 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Convert(converter = StringListConverter.class)
+    @Column(columnDefinition = "LONGTEXT")
     private List<String> historico;
     
     @ManyToOne()
@@ -31,7 +33,7 @@ public class Room {
 
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "room_users",
         joinColumns = @JoinColumn(name = "room_id"),
