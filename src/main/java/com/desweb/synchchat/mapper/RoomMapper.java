@@ -10,7 +10,7 @@ import org.mapstruct.Named;
 
 import com.desweb.synchchat.dto.RoomDto;
 import com.desweb.synchchat.model.Room;
-import com.desweb.synchchat.model.User;
+import com.desweb.synchchat.model.Usuario;
 
 @Mapper(componentModel = "spring")
 public interface RoomMapper {
@@ -32,12 +32,12 @@ public interface RoomMapper {
     List<Room> toRooms(List<RoomDto> roomDtos);
 
     @Named("mapUsersToIds")
-    default List<Long> mapUsersToIds(List<User> users) {
+    default List<Long> mapUsersToIds(List<Usuario> users) {
         if (users == null) {
             return null;
         }
         return users.stream()
-                .map(User::getId)
+                .map(Usuario::getId)
                 .collect(Collectors.toList());
     }
 }

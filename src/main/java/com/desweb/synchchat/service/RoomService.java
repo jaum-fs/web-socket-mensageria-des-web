@@ -3,9 +3,10 @@ package com.desweb.synchchat.service;
 import com.desweb.synchchat.dto.RoomDto;
 import com.desweb.synchchat.mapper.RoomMapper;
 import com.desweb.synchchat.model.Room;
-import com.desweb.synchchat.model.User;
+import com.desweb.synchchat.model.Usuario;
 import com.desweb.synchchat.repository.RoomRepository;
 import com.desweb.synchchat.repository.UserRepository;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -62,25 +63,23 @@ public class RoomService {
     // CREATE - Cria uma sala pública
     public RoomDto criarSalaPublica(Long ownerId) {
         // Verifica se o owner existe
-        userRepository.findById(ownerId)
+        val user = userRepository.findById(ownerId)
             .orElseThrow(() -> new RuntimeException("Usuário com id = " + ownerId + " não encontrado."));
         
-        Room room = new Room(ownerId);
+        Room room = new Room(user);
         room.setPassword(null);
         return roomMapper.toRoomDto(roomRepository.save(room));
     }
 
-    // CREATE - Cria sala privada com senha
     public RoomDto criarSalaPrivada(Long ownerId, String password) {
-        // Verifica se o owner existe
-        userRepository.findById(ownerId)
+        val user = userRepository.findById(ownerId)
             .orElseThrow(() -> new RuntimeException("Usuário com id = " + ownerId + " não encontrado."));
         
         if (password == null || password.trim().isEmpty()) {
             throw new RuntimeException("Sala privada precisa de uma senha!");
         }
         
-        Room room = new Room(ownerId);
+        Room room = new Room(user);
         room.setPassword(password);
         return roomMapper.toRoomDto(roomRepository.save(room));
     }
@@ -89,7 +88,7 @@ public class RoomService {
     public RoomDto adicionarUsuario(UUID roomId, Long userId) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Sala com id = " + roomId + " não encontrada."));
-        User user = userRepository.findById(userId)
+        Usuario usuario = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("Usuário com id = " + userId + " não encontrado."));
         
         // Verifica se o usuário já está na sala
@@ -97,8 +96,8 @@ public class RoomService {
             room.setUsers(new java.util.ArrayList<>());
         }
         
-        if (!room.getUsers().contains(user)) {
-            room.getUsers().add(user);
+        if (!room.getUsers().contains(usuario)) {
+            room.getUsers().add(usuario);
         }
         
         return roomMapper.toRoomDto(roomRepository.save(room));
@@ -108,11 +107,11 @@ public class RoomService {
     public RoomDto removerUsuario(UUID roomId, Long userId) {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Sala com id = " + roomId + " não encontrada."));
-        User user = userRepository.findById(userId)
+        Usuario usuario = userRepository.findById(userId)
             .orElseThrow(() -> new RuntimeException("Usuário com id = " + userId + " não encontrado."));
         
         if (room.getUsers() != null) {
-            room.getUsers().remove(user);
+            room.getUsers().remove(usuario);
         }
         
         return roomMapper.toRoomDto(roomRepository.save(room));

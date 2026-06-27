@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,9 @@ public class Room {
 
     private List<String> historico;
     
-    @Column(name = "user_id")
-    private  Long ownerId;
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
+    private Usuario owner;
 
     private String password;
 
@@ -35,12 +37,12 @@ public class Room {
         joinColumns = @JoinColumn(name = "room_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> users;
+    private List<Usuario> users;
     
 
     // Construtor personalizado
-    public Room(Long ownerId) {
-        this.ownerId = ownerId;
+    public Room(Usuario user) {
+        this.owner = user;
         this.historico = new ArrayList<>();
         this.users = new ArrayList<>();
         this.password = null;

@@ -1,7 +1,10 @@
 package com.desweb.synchchat.controller;
 
-import com.desweb.synchchat.model.User;
+import com.desweb.synchchat.model.Usuario;
 import com.desweb.synchchat.service.UserService;
+import com.desweb.synchchat.util.InfoUserResponse;
+import com.desweb.synchchat.util.UsuarioCreate;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,23 +20,23 @@ public class UserController {
 
     //LISTAR TODOS
     @GetMapping
-    public List<User> listarTodos() {
+    public List<Usuario> listarTodos() {
         return userService.listarTodos();
     }
  
     @GetMapping("{idUsuario}")
-    public User buscarPorId(@PathVariable("idUsuario") Long id) {
+    public Usuario buscarPorId(@PathVariable("idUsuario") Long id) {
         return userService.buscarPorId(id);
     }
  
     @PostMapping
-    public User cadastrar(@RequestBody User user) {
-        return userService.cadastrar(user);
+    public InfoUserResponse cadastrar(@RequestBody @Valid UsuarioCreate usuario) {
+        return userService.cadastrar(usuario);
     }
  
     @PutMapping
-    public User atualizar(@RequestBody User user) {
-        return userService.atualizar(user);
+    public Usuario atualizar(@RequestBody Usuario usuario) {
+        return userService.atualizar(usuario);
     }
 
     @DeleteMapping("{idUsuario}")
