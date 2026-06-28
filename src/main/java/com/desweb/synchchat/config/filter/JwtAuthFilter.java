@@ -38,16 +38,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         var authHeader = request.getHeader("Authorization");
 
-        // Se não veio header de Authorization, segue em frente, isto é, a requisição
-        // segue para o controller. Mas antes de chegar no controller será verificado
-        // se para acessar o recurso requisitado o usuário precisa estar logado ou
-        // necessita de alguma autorização (perfil).
-        // Em ambos os casos ocorrerá o erro 401 - UNAUTHORIZED (veja em SecurityConfig)
+        // Browsers não conseguem enviar headers customizados no upgrade WebSocket,
+        // então o token pode vir como query param ?token=... nesse caso.
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            String tokenParam = request.getParameter("token");
+            if (tokenParam != null && !tokenParam.isBlank()) {
+                authHeader = "Bearer " + tokenParam;
+            }
+        }
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
-            // return para que nenhuma linha de código abaixo seja executada após o
-            // controller concluir sua execução.
             return;
         }
 

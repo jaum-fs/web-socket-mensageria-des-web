@@ -10,4 +10,6 @@ import java.util.UUID;
 
 public interface MensagemRepository extends JpaRepository<Mensagem, Long> {
 
+    List<Mensagem> findBySala_IdOrderByDataEnvio(UUID salaId);
+
 }

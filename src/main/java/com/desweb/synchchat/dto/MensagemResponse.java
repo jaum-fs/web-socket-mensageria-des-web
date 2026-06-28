@@ -19,6 +19,7 @@ public class MensagemResponse {
     private UUID salaId;
     private Long remetenteId;
     private String remetenteNome;
+    private String remetenteRole;
     private String conteudo;
     private LocalDateTime dataEnvio;
 
@@ -28,6 +29,7 @@ public class MensagemResponse {
                 .salaId(mensagem.getSala().getId())
                 .remetenteId(mensagem.getRemetente().getId())
                 .remetenteNome(mensagem.getRemetente().getNickname())
+                .remetenteRole(mensagem.getRemetente().getRole().name())
                 .conteudo(mensagem.getConteudo())
                 .dataEnvio(mensagem.getDataEnvio())
                 .build();
