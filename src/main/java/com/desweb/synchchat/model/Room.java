@@ -23,10 +23,6 @@ public class Room {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Convert(converter = StringListConverter.class)
-    @Column(columnDefinition = "LONGTEXT")
-    private List<String> historico;
-    
     @ManyToOne()
     @JoinColumn(name = "user_id")
     private Usuario owner;
@@ -45,7 +41,6 @@ public class Room {
     // Construtor personalizado
     public Room(Usuario user) {
         this.owner = user;
-        this.historico = new ArrayList<>();
         this.users = new ArrayList<>();
         this.password = null;
     }

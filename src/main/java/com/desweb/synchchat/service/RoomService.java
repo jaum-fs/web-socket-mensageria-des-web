@@ -26,24 +26,6 @@ public class RoomService {
 
     @Autowired
     private RoomMapper roomMapper;
-
-    
-    // Atualiza a mensagem, a adiciona no histórico da sala
-    public RoomDto updateMsg(UUID id, String newMessage) {
-        Room room = roomRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Room not found with id: " + id));
-        
-        // Adiciona ao histórico
-        List<String> historico = room.getHistorico();
-        // Nunca será true
-        if (historico == null) {
-            historico = new java.util.ArrayList<>();
-            room.setHistorico(historico);
-        }
-        historico.add(newMessage);
-        
-        return roomMapper.toRoomDto(roomRepository.save(room));
-    }
     
     // READ - Lista todas as salas
     public List<RoomDto> listarTodos() {

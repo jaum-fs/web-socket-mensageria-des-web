@@ -56,15 +56,6 @@ public class RoomController {
         return ResponseEntity.status(HttpStatus.CREATED).body(room);
     }
 
-    // Atualiza a mensagem
-    @PutMapping("/{id}/mensagem")
-    public ResponseEntity<RoomDto> updateMsg(
-            @PathVariable UUID id,
-            @RequestBody String newMessage) {
-        RoomDto room = roomService.updateMsg(id, newMessage);
-        return ResponseEntity.ok(room);
-    }
-
     // Adiciona o usuário à sala
     @PutMapping("/{roomId}/usuario/{userId}")
     public ResponseEntity<RoomDto> adicionarUsuario(
