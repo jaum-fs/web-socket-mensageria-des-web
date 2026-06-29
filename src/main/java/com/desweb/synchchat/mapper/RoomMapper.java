@@ -18,11 +18,14 @@ public interface RoomMapper {
     // Room -> RoomDto
     @Mapping(target = "userIds", source = "users", qualifiedByName = "mapUsersToIds")
     @Mapping(target = "isPrivate", source = "password", qualifiedByName = "mapPasswordToIsPrivate")
+    @Mapping(target = "ownerId", source = "owner.id")
+    @Mapping(target = "historico", ignore = true)
     RoomDto toRoomDto(Room room);
 
     // RoomDto -> Room (inverso automático)
     @Mapping(target = "users", ignore = true)
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "owner", ignore = true)
     @InheritInverseConfiguration(name = "toRoomDto")
     Room toRoom(RoomDto roomDto);
 
